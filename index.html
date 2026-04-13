@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Product Performance Analysis | Power BI Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: #f8fafc;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #047857;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #86efac;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-green { background-color: #10b981; }
+        .badge-success { background-color: #059669; }
+        .badge-orange { background-color: #f59e0b; }
+        .badge-teal { background-color: #14b8a6; }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Sections */
+        section {
+            padding: 4rem 2rem;
+        }
+
+        section:nth-child(even) {
+            background-color: white;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #047857;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .info-card h3 {
+            color: #047857;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .info-card p {
+            color: #64748b;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 4px solid #10b981;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .kpi-card h3 {
+            color: #047857;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-card p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Visualization Cards */
+        .viz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .viz-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .viz-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .viz-card h3 {
+            color: #047857;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .viz-card p {
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .viz-card ul {
+            list-style-position: inside;
+            color: #64748b;
+        }
+
+        .viz-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Insights */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .insight-card {
+            background: #f0fdf4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+
+        .insight-card strong {
+            color: #047857;
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .insight-card p {
+            color: #166534;
+        }
+
+        /* Screenshot */
+        .screenshot {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Technologies */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .tech-card h3 {
+            color: #047857;
+            font-size: 1.1rem;
+        }
+
+        /* Skills */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .skill-chip {
+            background: #d1fae5;
+            color: #047857;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .skill-chip:hover {
+            background: #047857;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: #047857;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: white;
+            color: #047857;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            section {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#metrics">Key Metrics</a></li>
+            <li><a href="#visualizations">Visualizations</a></li>
+            <li><a href="#insights">Insights</a></li>
+            <li><a href="#technologies">Technologies</a></li>
+            <li><a href="#skills">Skills</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>📊 Amazon Product Performance Analysis</h1>
+        <p>Understanding Success Factors in E-commerce</p>
+        <div class="badges">
+            <span class="badge badge-green">Power BI</span>
+            <span class="badge badge-success">Status: Complete</span>
+            <span class="badge badge-orange">Year: 2024</span>
+            <span class="badge badge-teal">Dataset: 1.5K Products</span>
+        </div>
+    </div>
+
+    <!-- Project Overview -->
+    <section id="overview">
+        <div class="container">
+            <h2>📋 Project Overview</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem; color: #64748b;">
+                This Power BI dashboard analyzes product performance across the Amazon India Marketplace, 
+                examining 1,462 products across 9 categories to identify success factors in e-commerce. 
+                The analysis focuses on customer engagement, ratings, pricing strategies, and discount patterns.
+            </p>
+            <div class="overview-grid">
+                <div class="info-card">
+                    <h3>📊 Data Source</h3>
+                    <p>Amazon India Marketplace</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎯 Dataset Scope</h3>
+                    <p>1,462 products across 9 categories</p>
+                </div>
+                <div class="info-card">
+                    <h3>💡 Business Objective</h3>
+                    <p>Identify success factors in e-commerce performance</p>
+                </div>
+                <div class="info-card">
+                    <h3>🛠️ Tool</h3>
+                    <p>Microsoft Power BI with DAX</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Metrics -->
+    <section id="metrics">
+        <div class="container">
+            <h2>📈 Key Metrics</h2>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <h3>1,462</h3>
+                    <p>Total Products</p>
+                </div>
+                <div class="kpi-card">
+                    <h3>₹5,453</h3>
+                    <p>Avg Discounted Price</p>
+                </div>
+                <div class="kpi-card">
+                    <h3>4.1 ⭐</h3>
+                    <p>Average Rating</p>
+                </div>
+                <div class="kpi-card">
+                    <h3>9</h3>
+                    <p>Categories</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Visualizations -->
+    <section id="visualizations">
+        <div class="container">
+            <h2>📊 Dashboard Visualizations</h2>
+            <div class="viz-grid">
+                <div class="viz-card">
+                    <h3>Average Customer Engagement by Category</h3>
+                    <p>Bar chart showing customer engagement (rating count) across all categories.</p>
+                    <ul>
+                        <li>Musical Instruments leads with 44,441 ratings</li>
+                        <li>Electronics follows with 29,998 ratings</li>
+                        <li>Computers & Accessories has 17,137 ratings</li>
+                    </ul>
+                </div>
+
+                <div class="viz-card">
+                    <h3>Rating Distribution</h3>
+                    <p>Pie chart showing the distribution of products by rating range.</p>
+                    <ul>
+                        <li>75.85% of products have 4-5 star ratings</li>
+                        <li>23.73% have 3-4 star ratings</li>
+                        <li>Only 0.42% have 2-3 star ratings</li>
+                    </ul>
+                </div>
+
+                <div class="viz-card">
+                    <h3>Product Distribution by Category</h3>
+                    <p>Bar chart showing how products are distributed across categories.</p>
+                    <ul>
+                        <li>Electronics: 526 products (36%)</li>
+                        <li>Computers & Accessories: 451 products (31%)</li>
+                        <li>Home & Kitchen: 447 products (31%)</li>
+                    </ul>
+                </div>
+
+                <div class="viz-card">
+                    <h3>Product Distribution by Discount Range</h3>
+                    <p>Bar chart analyzing discount strategies across products.</p>
+                    <ul>
+                        <li>1,186 products (81%) have 0-20% discounts</li>
+                        <li>Only 131 products have 60%+ discounts</li>
+                        <li>Most products use modest discount strategies</li>
+                    </ul>
+                </div>
+
+                <div class="viz-card">
+                    <h3>Average Price by Rating Range</h3>
+                    <p>Bar chart showing the correlation between product ratings and pricing.</p>
+                    <ul>
+                        <li>4-5 star products: ₹3,587 average price</li>
+                        <li>3-4 star products: ₹1,716 average price</li>
+                        <li>2-3 star products: ₹518 average price</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Insights -->
+    <section id="insights">
+        <div class="container">
+            <h2>💡 Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <strong>1.</strong>
+                    <p>75.85% of products achieve 4-5 star ratings, indicating a high-quality product catalog overall</p>
+                </div>
+                <div class="insight-card">
+                    <strong>2.</strong>
+                    <p>Higher-rated products command significantly higher prices (₹3,587 vs ₹518), showing customers are willing to pay more for quality</p>
+                </div>
+                <div class="insight-card">
+                    <strong>3.</strong>
+                    <p>81% of products use modest discounts (0-20%), suggesting a conservative pricing strategy rather than aggressive promotions</p>
+                </div>
+                <div class="insight-card">
+                    <strong>4.</strong>
+                    <p>Electronics, Computers & Accessories, and Home & Kitchen dominate the product mix, representing 97% of all products</p>
+                </div>
+                <div class="insight-card">
+                    <strong>5.</strong>
+                    <p>Musical Instruments shows the highest customer engagement (44,441 ratings per product), 1.5x higher than Electronics</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Screenshot -->
+    <section>
+        <div class="container">
+            <h2>📸 Dashboard Preview</h2>
+            <div class="screenshot">
+                <img src="dash_BI.png" alt="Amazon Product Performance Dashboard">
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies -->
+    <section id="technologies">
+        <div class="container">
+            <h2>🛠️ Technologies Used</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3>Power BI</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>Amazon India Data</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>DAX</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>Data Visualization</h3>
+                </div>
+                <div class="tech-card">
+                    <h3>GitHub</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills">
+        <div class="container">
+            <h2>💡 Skills Demonstrated</h2>
+            <div class="skills-container">
+                <span class="skill-chip">Data Visualization</span>
+                <span class="skill-chip">DAX</span>
+                <span class="skill-chip">KPI Design</span>
+                <span class="skill-chip">Dashboard Design</span>
+                <span class="skill-chip">E-commerce Analytics</span>
+                <span class="skill-chip">Customer Insights</span>
+                <span class="skill-chip">Business Intelligence</span>
+                <span class="skill-chip">Data Storytelling</span>
+                <span class="skill-chip">Power BI</span>
+                <span class="skill-chip">Market Analysis</span>
+                <span class="skill-chip">Pricing Strategy</span>
+                <span class="skill-chip">Performance Metrics</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Data Analytics Portfolio Project</p>
+            <p style="margin-top: 0.5rem; color: #86efac;">Demonstrating Power BI proficiency in analyzing e-commerce product performance</p>
+            <div class="button-group">
+                <a href="https://github.com/jusmartinsmm-dot/amazon-product-performance-powerbi" target="_blank" rel="noopener noreferrer" class="btn">
+                    View on GitHub
+                </a>
+                <a href="amazon-dashboard.pbix" download class="btn">
+                    Download .pbix File
+                </a>
+            </div>
+            <p style="margin-top: 2rem; font-size: 0.875rem; color: #86efac;">Analysis by: Juliana Martins | March 2026</p>
+        </div>
+    </footer>
+</body>
+</html>
+
